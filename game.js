@@ -144,6 +144,8 @@ function onCellClick(e) {
     if (userInput.length === sequence.length) {
       setMessage('Camera hacked! Access granted.', true);
       gameActive = false;
+      showHackerWinAnimation();
+      return;
     }
   } else {
     cell.classList.add('error');
@@ -188,6 +190,60 @@ function updateTerminalProgress() {
   let filled = Math.round(progress * barLength);
   let bar = '[' + '#'.repeat(filled) + '-'.repeat(barLength - filled) + `] ${userInput.length}/${sequence.length}`;
   progressDiv.innerHTML += `\n<span style=\"color:#39ff14;\">Progress:</span> <span style=\"color:#fff;\">${bar}</span>`;
+}
+
+function getRandomHackerWinMessage() {
+  const messages = [
+    'ACCESS GRANTED',
+    'CAMERA OVERRIDE SUCCESSFUL',
+    'ROOT SHELL OPENED',
+    'SYSTEM BREACHED',
+    'INTRUSION COMPLETE',
+    'TERMINAL UNLOCKED',
+    'SURVEILLANCE BYPASSED',
+    'ADMIN MODE ENABLED',
+    'ENCRYPTION CRACKED',
+    'FIREWALL DISABLED',
+    'CAMERA LOOP INITIATED',
+    'SECURITY LOGS ERASED',
+    'NETWORK INFILTRATED',
+    'PROXY CHAIN ESTABLISHED',
+    'TRACE AVOIDED',
+    'DATA STREAM CAPTURED',
+    'CREDENTIALS EXTRACTED',
+    'SESSION HIJACKED',
+    'TERMINAL ROOTED',
+    'CAMERA FEED SPOOFED',
+    'MATRIX MODE: ON',
+    'GHOST IN THE SYSTEM',
+    'ZERO DAY DEPLOYED',
+    'ICE BROKEN',
+    'SYSADMIN LOCKED OUT',
+    'BLACK ICE NEUTRALIZED',
+    'BACKDOOR INSTALLED',
+    'SILENT ENTRY',
+    'STEALTH MODE ACTIVE',
+    'OPERATION: SUCCESSFUL'
+  ];
+  return messages[Math.floor(Math.random() * messages.length)];
+}
+
+function showHackerWinAnimation() {
+  const progressDiv = document.getElementById('terminal-progress');
+  if (!progressDiv) return;
+  const msg = getRandomHackerWinMessage();
+  let i = 0;
+  progressDiv.innerHTML = '';
+  function typeNext() {
+    if (i <= msg.length) {
+      progressDiv.innerHTML = `<pre style='color:#39ff14;font-size:2em;text-shadow:0 0 8px #39ff14;'>${msg.slice(0, i)}<span class='blink'>█</span></pre>`;
+      i++;
+      setTimeout(typeNext, 60);
+    } else {
+      progressDiv.innerHTML = `<pre style='color:#39ff14;font-size:2em;text-shadow:0 0 8px #39ff14;'>${msg}</pre>`;
+    }
+  }
+  typeNext();
 }
 
 document.getElementById('restart').addEventListener('click', restartGame);
