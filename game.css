@@ -1,5 +1,5 @@
 body {
-  background: #181c20;
+  background: linear-gradient(120deg, #181c20 60%, #23272b 100%);
   color: #e0e0e0;
   font-family: 'Segoe UI', Arial, sans-serif;
   display: flex;
@@ -10,8 +10,12 @@ body {
   margin: 0;
 }
 h1 {
+  margin-top: 38px;
   margin-bottom: 0.5em;
   letter-spacing: 2px;
+  color: #39ff14;
+  text-shadow: 0 0 8px #39ff14, 0 0 2px #fff;
+  font-size: 2.2em;
 }
 #game {
   display: grid;
@@ -49,11 +53,18 @@ h1 {
   margin-bottom: 1em;
   font-size: 1.2em;
   letter-spacing: 2px;
+  background: #181c20;
+  border-radius: 8px;
+  padding: 0.4em 1em;
+  box-shadow: 0 0 6px #39ff1420 inset;
+  margin-bottom: 1.2em;
 }
 #message {
   font-size: 1.2em;
   margin-top: 1em;
   min-height: 1.5em;
+  color: #39ff14;
+  text-shadow: 0 0 4px #39ff1460;
 }
 button {
   margin-top: 1em;
@@ -61,13 +72,15 @@ button {
   font-size: 1em;
   border: none;
   border-radius: 5px;
-  background: #4caf50;
-  color: #fff;
+  background: linear-gradient(90deg, #39ff14 60%, #4caf50 100%);
+  color: #181c20;
+  font-weight: bold;
+  box-shadow: 0 2px 8px #39ff1430;
   cursor: pointer;
   transition: background 0.2s;
 }
 button:hover {
-  background: #388e3c;
+  background: linear-gradient(90deg, #4caf50 60%, #39ff14 100%);
 }
 #main-content {
   flex: 1;
@@ -78,6 +91,41 @@ button:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  background: #20242aee;
+  border-radius: 16px 16px 12px 12px;
+  box-shadow: 0 8px 32px #000b, 0 1.5px 0 #39ff1430 inset;
+  border: 2.5px solid #23272b;
+  border-top: none;
+  overflow: hidden;
+  z-index: 20;
+}
+#main-content::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 38px;
+  background: linear-gradient(90deg, #23272b 80%, #39ff1420 100%);
+  border-radius: 16px 16px 0 0;
+  border-bottom: 1.5px solid #181c20;
+  z-index: 2;
+}
+#main-content .window-controls {
+  position: absolute;
+  top: 10px;
+  left: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 3;
+}
+.window-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  background: #ff5f56;
+  box-shadow: 18px 0 0 #ffbd2e, 36px 0 0 #27c93f;
 }
 @import url('terminal.css');
 @media (max-width: 900px) {
@@ -88,6 +136,7 @@ button:hover {
     box-shadow: none;
     padding: 18px 8px;
     margin: 0;
+    z-index: 10;
   }
   #main-content {
     padding: 20px 8px;
@@ -111,4 +160,25 @@ button:hover {
 .cell.animate-out {
   animation: gridFadeOut 1s cubic-bezier(.68,-0.55,.27,1.55) forwards;
   z-index: 2;
+}
+#watermark {
+  position: fixed;
+  right: 18px;
+  bottom: 12px;
+  color: #39ff14;
+  font-size: 1.1em;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 9999;
+  font-family: 'Consolas', 'Fira Mono', 'monospace';
+  letter-spacing: 1px;
+  user-select: none;
+}
+.terminal-header::after {
+  content: '  v3.1.1';
+  color: #39ff14;
+  font-size: 0.8em;
+  margin-left: 8px;
+  opacity: 0.7;
+  letter-spacing: 1px;
 }
