@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camera Hack Minigame</title>
+  <style>
+    body {
+      background: #181c20;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      margin-bottom: 0.5em;
+      letter-spacing: 2px;
+    }
+    #game {
+      display: grid;
+      grid-template-columns: repeat(5, 60px);
+      grid-gap: 10px;
+      margin-bottom: 1em;
+    }
+    .cell {
+      width: 60px;
+      height: 60px;
+      background: #23272b;
+      border: 2px solid #333;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5em;
+      cursor: pointer;
+      transition: background 0.2s, border 0.2s;
+      user-select: none;
+    }
+    .cell.selected {
+      background: #2e8b57;
+      border-color: #4caf50;
+    }
+    .cell.error {
+      background: #b71c1c;
+      border-color: #f44336;
+    }
+    #sequence {
+      margin-bottom: 1em;
+      font-size: 1.2em;
+      letter-spacing: 2px;
+    }
+    #message {
+      font-size: 1.2em;
+      margin-top: 1em;
+      min-height: 1.5em;
+    }
+    button {
+      margin-top: 1em;
+      padding: 0.5em 1.5em;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      background: #4caf50;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #388e3c;
+    }
+  </style>
+</head>
+<body>
+  <h1>Camera Hack</h1>
+  <div id="sequence"></div>
+  <div id="game"></div>
+  <div id="message"></div>
+  <button id="restart">Restart</button>
+  <script>
+    const gridSize = 5;
+    const sequenceLength = 5;
+    let matrix = [];
+    let sequence = [];
+    let userInput = [];
+    let gameActive = true;
+
+    function randomInt(max) {
+      return Math.floor(Math.random() * max);
+    }
+
+    function generateMatrix() {
+      matrix = [];
+      for (let i = 0; i < gridSize * gridSize; i++) {
+        matrix.push(randomInt(10));
+      }
+    }
+
+    function generateSequence() {
+      sequence = [];
+      let used = new Set();
+      while (sequence.length < sequenceLength) {
+        let idx = randomInt(gridSize * gridSize);
+        if (!used.has(idx)) {
+          sequence.push(idx);
+          used.add(idx);
+        }
+      }
+    }
+
+    function renderMatrix() {
+      const game = document.getElementById('game');
+      game.innerHTML = '';
+      for (let i = 0; i < matrix.length; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.textContent = matrix[i];
+        cell.dataset.idx = i;
+        cell.addEventListener('click', onCellClick);
+        game.appendChild(cell);
+      }
+    }
+
+    function renderSequence() {
+      const seqDiv = document.getElementById('sequence');
+      seqDiv.innerHTML = 'Sequence: ' + sequence.map(idx => matrix[idx]).join(' → ');
+    }
+
+    function onCellClick(e) {
+      if (!gameActive) return;
+      const idx = parseInt(e.currentTarget.dataset.idx);
+      const cell = e.currentTarget;
+      const expectedIdx = sequence[userInput.length];
+      if (idx === expectedIdx) {
+        cell.classList.add('selected');
+        userInput.push(idx);
+        if (userInput.length === sequence.length) {
+          setMessage('Camera hacked! Access granted.', true);
+          gameActive = false;
+        }
+      } else {
+        cell.classList.add('error');
+        setMessage('Wrong cell! Try again.', false);
+        setTimeout(() => {
+          cell.classList.remove('error');
+        }, 500);
+        userInput = [];
+        document.querySelectorAll('.cell.selected').forEach(c => c.classList.remove('selected'));
+      }
+    }
+
+    function setMessage(msg, success) {
+      const message = document.getElementById('message');
+      message.textContent = msg;
+      message.style.color = success ? '#4caf50' : '#f44336';
+    }
+
+    function restartGame() {
+      generateMatrix();
+      generateSequence();
+      userInput = [];
+      gameActive = true;
+      setMessage('', true);
+      renderMatrix();
+      renderSequence();
+    }
+
+    document.getElementById('restart').addEventListener('click', restartGame);
+    restartGame();
+  </script>
+</body>
+</html>
