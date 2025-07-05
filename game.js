@@ -144,6 +144,8 @@ function onCellClick(e) {
     if (userInput.length === sequence.length) {
       setMessage('Camera hacked! Access granted.', true);
       gameActive = false;
+      showHackerWinAnimation();
+      return;
     }
   } else {
     cell.classList.add('error');
@@ -181,40 +183,47 @@ function restartGame() {
 function updateTerminalProgress() {
   const progressDiv = document.getElementById('terminal-progress');
   if (!progressDiv) return;
-  // User-supplied camera ASCII art as array of lines
-  const cameraLines = [
-    "⠀⠀⠀⣸⣏⠛⠻⠿⣿⣶⣤⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
-    "⠀⠀⠀⣿⣿⣿⣷⣦⣤⣈⠙⠛⠿⣿⣷⣶⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
-    "⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣶⣦⣄⣈⠙⠻⠿⣿⣷⣶⣤⣀⡀⠀⠀⠀⠀⠀⠀",
-    "⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣦⣄⡉⠛⠻⢿⣿⣷⣶⣤⣀⠀⠀",
-    "⠀⠀⠀⠉⠙⠛⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣾⢻⣍⡉⠉⣿⠇⠀",
-    "⠀⠀⠀⠀⠀⠀⠀⢹⡏⢹⣿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⣰⣿⣿⣾⠏⠀⠀",
-    "⠀⠀⠀⠀⠀⠀⠀⠘⣿⠈⣿⠸⣯⠉⠛⠿⢿⣿⣿⣿⣿⡏⠀⠻⠿⣿⠇⠀⠀⠀",
-    "⠀⠀⠀⠀⠀⠀⠀⠀⢿⡆⢻⡄⣿⡀⠀⠀⠀⠈⠙⠛⠿⠿⠿⠿⠛⠋⠀⠀⠀⠀",
-    "⠀⠀⠀⠀⠀⠀⠀⠀⢸⣧⠘⣇⢸⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
-    "⠀⠀⠀⠀⠀⠀⠀⣀⣀⣿⣴⣿⢾⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
-    "⠀⠀⣴⡶⠾⠟⠛⠋⢹⡏⠀⢹⡇⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
-    "⠀⢠⣿⠀⠀⠀⠀⢀⣈⣿⣶⠿⠿⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
-    "⠀⢸⣿⣴⠶⠞⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
-    "⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"
-  ];
-  // Calculate how many lines to show in green
   let progress = userInput.length / sequence.length;
-  let totalLines = cameraLines.length;
-  let greenLines = Math.round(progress * totalLines);
-  let cameraHtml = cameraLines.map((line, i) => {
-    if (i < totalLines - greenLines) {
-      return `<span style='color:transparent; user-select:none;'>${line}</span>`;
-    } else {
-      return `<span style='color:#39ff14;'>${line}</span>`;
-    }
-  }).join("\n");
-  progressDiv.innerHTML = `<pre id=\"ascii-cam\">${cameraHtml}</pre>`;
+  progressDiv.innerHTML = `<pre id=\"ascii-cam\">${window.renderCameraHtml(progress)}</pre>`;
   // Progress bar
   let barLength = 20;
   let filled = Math.round(progress * barLength);
   let bar = '[' + '#'.repeat(filled) + '-'.repeat(barLength - filled) + `] ${userInput.length}/${sequence.length}`;
   progressDiv.innerHTML += `\n<span style=\"color:#39ff14;\">Progress:</span> <span style=\"color:#fff;\">${bar}</span>`;
+}
+
+function getRandomHackerWinMessage() {
+  // Use the global hackerWinMessages array from hackerWinMessages.js
+  const messages = window.hackerWinMessages || [];
+  return messages[Math.floor(Math.random() * messages.length)] || 'ACCESS GRANTED';
+}
+
+function animateGridOut() {
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach((cell, i) => {
+    setTimeout(() => {
+      cell.classList.add('animate-out');
+    }, i * 40 + Math.random() * 80); // staggered, a bit random
+  });
+}
+
+function showHackerWinAnimation() {
+  animateGridOut(); // Animate grid away!
+  const progressDiv = document.getElementById('terminal-progress');
+  if (!progressDiv) return;
+  const msg = getRandomHackerWinMessage();
+  let i = 0;
+  progressDiv.innerHTML = '';
+  function typeNext() {
+    if (i <= msg.length) {
+      progressDiv.innerHTML = `<pre style='color:#39ff14;font-size:2em;text-shadow:0 0 8px #39ff14;'>${msg.slice(0, i)}<span class='blink'>█</span></pre>`;
+      i++;
+      setTimeout(typeNext, 60);
+    } else {
+      progressDiv.innerHTML = `<pre style='color:#39ff14;font-size:2em;text-shadow:0 0 8px #39ff14;'>${msg}</pre>`;
+    }
+  }
+  typeNext();
 }
 
 document.getElementById('restart').addEventListener('click', restartGame);
