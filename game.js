@@ -193,39 +193,9 @@ function updateTerminalProgress() {
 }
 
 function getRandomHackerWinMessage() {
-  const messages = [
-    'ACCESS GRANTED',
-    'CAMERA OVERRIDE SUCCESSFUL',
-    'ROOT SHELL OPENED',
-    'SYSTEM BREACHED',
-    'INTRUSION COMPLETE',
-    'TERMINAL UNLOCKED',
-    'SURVEILLANCE BYPASSED',
-    'ADMIN MODE ENABLED',
-    'ENCRYPTION CRACKED',
-    'FIREWALL DISABLED',
-    'CAMERA LOOP INITIATED',
-    'SECURITY LOGS ERASED',
-    'NETWORK INFILTRATED',
-    'PROXY CHAIN ESTABLISHED',
-    'TRACE AVOIDED',
-    'DATA STREAM CAPTURED',
-    'CREDENTIALS EXTRACTED',
-    'SESSION HIJACKED',
-    'TERMINAL ROOTED',
-    'CAMERA FEED SPOOFED',
-    'MATRIX MODE: ON',
-    'GHOST IN THE SYSTEM',
-    'ZERO DAY DEPLOYED',
-    'ICE BROKEN',
-    'SYSADMIN LOCKED OUT',
-    'BLACK ICE NEUTRALIZED',
-    'BACKDOOR INSTALLED',
-    'SILENT ENTRY',
-    'STEALTH MODE ACTIVE',
-    'OPERATION: SUCCESSFUL'
-  ];
-  return messages[Math.floor(Math.random() * messages.length)];
+  // Use the global hackerWinMessages array from hackerWinMessages.js
+  const messages = window.hackerWinMessages || [];
+  return messages[Math.floor(Math.random() * messages.length)] || 'ACCESS GRANTED';
 }
 
 function showHackerWinAnimation() {
