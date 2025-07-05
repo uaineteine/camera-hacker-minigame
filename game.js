@@ -198,7 +198,17 @@ function getRandomHackerWinMessage() {
   return messages[Math.floor(Math.random() * messages.length)] || 'ACCESS GRANTED';
 }
 
+function animateGridOut() {
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach((cell, i) => {
+    setTimeout(() => {
+      cell.classList.add('animate-out');
+    }, i * 40 + Math.random() * 80); // staggered, a bit random
+  });
+}
+
 function showHackerWinAnimation() {
+  animateGridOut(); // Animate grid away!
   const progressDiv = document.getElementById('terminal-progress');
   if (!progressDiv) return;
   const msg = getRandomHackerWinMessage();
